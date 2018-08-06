@@ -28,7 +28,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 \
     && export LANG=en_US.UTF-8 \
     && apt-get install -y software-properties-common \
     && add-apt-repository -y ppa:ondrej/php \
-    && apt-get update
+    && apt-get update \
     && apt-get -y upgrade
 
 # Basic Requirements
@@ -67,12 +67,24 @@ ADD ./nginx.default.conf /etc/nginx/sites-available/default
 ADD ./nginx.magento2.conf /etc/nginx/sites-available/magento2.conf
 
 # mysql installation
+
+
+#The following commands set the MySQL root password to 'vietcli' when you install the mysql-server package.
 RUN echo "mysql-server mysql-server/root_password password" | debconf-set-selections && \
     echo "mysql-server mysql-server/root_password_again password" | debconf-set-selections && \
     apt install -y mysql-server
 
 # mysql config
 RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/explicit_defaults_for_timestamp = true\nbind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
+#RUN mysql -uroot -p'vietcli' -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'vietcli' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+
+# PHPMyAdmin
+#RUN echo 'phpmyadmin phpmyadmin/dbconfig-install boolean true' | debconf-set-selections
+#RUN echo 'phpmyadmin phpmyadmin/app-password-confirm password phpmyadmin_password ' | debconf-set-selections
+#RUN echo 'phpmyadmin phpmyadmin/mysql/admin-pass password mysql_pass' | debconf-set-selections
+#RUN echo 'phpmyadmin phpmyadmin/mysql/app-pass password mysql_pass' | debconf-set-selections
+#RUN echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf-set-selections
+#RUN /etc/init.d/mysql start; apt-get -y install phpmyadmin --no-install-recommends
 
 # Generate self-signed ssl cert
 RUN mkdir /etc/nginx/ssl/
