@@ -116,19 +116,19 @@ RUN chmod +x /usr/sbin/modman
 #RUN apt-get install phpmyadmin -y
 
 # Install Ioncube
-RUN wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
- && tar xvfz ioncube_loaders_lin_x86-64.tar.gz \
- && PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;") \
- && PHP_EXT_DIR=$(php -i | grep extension_dir | tr -s ' ' | cut -d ' ' -f 5) \
-# && PHP_EXT_DIR=$(php-config --extension-dir) \
- && mkdir -p $PHP_EXT_DIR \
- && cp "ioncube/ioncube_loader_lin_${PHP_VERSION}.so" $PHP_EXT_DIR \
- && cp "ioncube/ioncube_loader_lin_${PHP_VERSION}_ts.so" $PHP_EXT_DIR \
-&& rm -rf ioncube ioncube_loaders_lin_x86-64.tar.gz \
-&& sed -i "925i \ \ " /etc/php/$PHP_VERSION/fpm/php.ini \
-&& sed -i "925i zend_extension = ${PHP_EXT_DIR}/ioncube_loader_lin_${PHP_VERSION}.so" /etc/php/$PHP_VERSION/fpm/php.ini \
-&& sed -i "925i \ \ " /etc/php/${PHP_VERSION}/cli/php.ini \
-&& sed -i "925i zend_extension = ${PHP_EXT_DIR}/ioncube_loader_lin_${PHP_VERSION}.so" /etc/php/$PHP_VERSION/cli/php.ini
+#RUN wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
+# && tar xvfz ioncube_loaders_lin_x86-64.tar.gz \
+# && PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;") \
+# && PHP_EXT_DIR=$(php -i | grep extension_dir | tr -s ' ' | cut -d ' ' -f 5) \
+## && PHP_EXT_DIR=$(php-config --extension-dir) \
+# && mkdir -p $PHP_EXT_DIR \
+# && cp "ioncube/ioncube_loader_lin_${PHP_VERSION}.so" $PHP_EXT_DIR \
+# && cp "ioncube/ioncube_loader_lin_${PHP_VERSION}_ts.so" $PHP_EXT_DIR \
+#&& rm -rf ioncube ioncube_loaders_lin_x86-64.tar.gz \
+#&& sed -i "925i \ \ " /etc/php/$PHP_VERSION/fpm/php.ini \
+#&& sed -i "925i zend_extension = ${PHP_EXT_DIR}/ioncube_loader_lin_${PHP_VERSION}.so" /etc/php/$PHP_VERSION/fpm/php.ini \
+#&& sed -i "925i \ \ " /etc/php/${PHP_VERSION}/cli/php.ini \
+#&& sed -i "925i zend_extension = ${PHP_EXT_DIR}/ioncube_loader_lin_${PHP_VERSION}.so" /etc/php/$PHP_VERSION/cli/php.ini
 
 # Reload PHP Configurations
 
