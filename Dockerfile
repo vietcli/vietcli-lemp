@@ -1,6 +1,12 @@
 FROM ubuntu:16.04
 MAINTAINER Viet Duong<viet.duong@hotmail.com>
 
+# Compatible with :
+#    Ubuntu 16.04
+#    Nginx 1.15.x
+#    MySQL 14.14
+#    PHP 7.0
+
 # Set one or more individual labels
 LABEL vietcli.docker.base.image.version="0.1.0-beta"
 LABEL vendor="[VietCLI] vietduong/lemp-image"
@@ -34,7 +40,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 \
 # Basic Requirements
 RUN apt-get update
 RUN apt-get -y install pwgen python-setuptools curl git nano sudo unzip openssh-server openssl
-RUN apt-get -y install nginx php7.0-fpm php7.0-mysql
+RUN apt-get -y install nginx=1.15.* php7.0-fpm php7.0-mysql
 
 # Install imagemagick
 RUN apt-get -y install imagemagick
@@ -43,10 +49,11 @@ RUN apt-get -y install imagemagick
 RUN apt-get -y install php7.0-imagick php7.0-intl php7.0-curl php7.0-xsl php7.0-mcrypt php7.0-mbstring php7.0-bcmath php7.0-gd php7.0-zip php7.0-soap
 
 # nginx config
-RUN sed -i -e"s/user\s*www-data;/user vietcli www-data;/" /etc/nginx/nginx.conf
+RUN sed -i -e"s/user\s*nginx;/user vietcli;/" /etc/nginx/nginx.conf
 RUN sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf
-RUN sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size 100m/" /etc/nginx/nginx.conf
-RUN sed -i "61i \\\troot /home/vietcli/files/html;" /etc/nginx/nginx.conf
+RUN sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size 100m;/" /etc/nginx/nginx.conf
+RUN sed -i -e"s/include\s*\/etc\/nginx\/conf.d\/\*.conf;/include \/etc\/nginx\/conf.d\/\*.conf;\n\tinclude \/etc\/nginx\/sites-enabled\/\*;/" /etc/nginx/nginx.conf
+#RUN sed -i "61i \\\troot /home/vietcli/files/html;" /etc/nginx/nginx.conf
 #RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # php-fpm config
@@ -55,8 +62,11 @@ RUN sed -i -e "s/post_max_size\s*=\s*8M/post_max_size = 100M/g" /etc/php/7.0/fpm
 RUN sed -i -e "s/;always_populate_raw_post_data\s*=\s*-1/always_populate_raw_post_data = -1/g" /etc/php/7.0/fpm/php.ini
 RUN sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" /etc/php/7.0/fpm/pool.d/www.conf
 RUN sed -i -e "s/user\s*=\s*www-data/user = vietcli/g" /etc/php/7.0/fpm/pool.d/www.conf
+RUN sed -i -e "s/group\s*=\s*www-data/group = vietcli/g" /etc/php/7.0/fpm/pool.d/www.conf
+RUN sed -i -e "s/listen.owner\s*=\s*www-data/listen.owner = vietcli/g" /etc/php/7.0/fpm/pool.d/www.conf
+RUN sed -i -e "s/listen.group\s*=\s*www-data/listen.group = vietcli/g" /etc/php/7.0/fpm/pool.d/www.conf
 RUN echo "php_admin_flag[log_errors] = on" >> /etc/php/7.0/fpm/pool.d/www.conf
-RUN echo "php_admin_value[memory_limit] = -1" >> /etc/php/7.0/fpm/pool.d/www.conf
+RUN echo "php_admin_value[memory_limit] = 2048" >> /etc/php/7.0/fpm/pool.d/www.conf
 RUN echo "php_admin_value[max_execution_time] = 3600" >> /etc/php/7.0/fpm/pool.d/www.conf
 RUN echo "php_admin_value[max_input_vars] = 36000" >> /etc/php/7.0/fpm/pool.d/www.conf
 RUN echo "php_admin_value[post_max_size] = 20M" >> /etc/php/7.0/fpm/pool.d/www.conf
@@ -65,7 +75,6 @@ RUN echo "php_admin_value[upload_max_filesize] = 20M" >> /etc/php/7.0/fpm/pool.d
 # nginx site conf
 ADD ./nginx.default.conf /etc/nginx/sites-available/default
 ADD ./nginx.magento2.conf /etc/nginx/sites-available/magento2.conf
-
 # mysql installation
 
 

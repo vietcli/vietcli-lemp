@@ -19,7 +19,12 @@ if [ ! -f /home/vietcli/.log/vietcli-pw.txt ]; then
     echo $VIETCLI_PASSWORD > /home/vietcli/.log/vietcli-pw.txt
 
     # Enable Magento 2 site
-    ln -s /etc/nginx/sites-available/magento2.conf /etc/nginx/sites-enabled/
+    if [ ! -d "/etc/nginx/sites-enabled/" ]; then
+        mkdir /etc/nginx/sites-enabled;
+    fi
+
+    ln -s /etc/nginx/sites-available/magento2.conf /etc/nginx/sites-enabled/magento2.conf
+    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 fi
 
