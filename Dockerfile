@@ -51,7 +51,7 @@ RUN apt-get -y install php7.0-imagick php7.0-intl php7.0-curl php7.0-xsl php7.0-
 # nginx config
 RUN sed -i -e"s/user\s*nginx;/user vietcli;/" /etc/nginx/nginx.conf
 RUN sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf
-RUN sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size 100m;/" /etc/nginx/nginx.conf
+RUN sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size 100m/" /etc/nginx/nginx.conf
 RUN sed -i -e"s/include\s*\/etc\/nginx\/conf.d\/\*.conf;/include \/etc\/nginx\/conf.d\/\*.conf;\n\tinclude \/etc\/nginx\/sites-enabled\/\*;/" /etc/nginx/nginx.conf
 #RUN sed -i "61i \\\troot /home/vietcli/files/html;" /etc/nginx/nginx.conf
 #RUN echo "daemon off;" >> /etc/nginx/nginx.conf
@@ -73,8 +73,7 @@ RUN echo "php_admin_value[post_max_size] = 20M" >> /etc/php/7.0/fpm/pool.d/www.c
 RUN echo "php_admin_value[upload_max_filesize] = 20M" >> /etc/php/7.0/fpm/pool.d/www.conf
 
 # nginx site conf
-ADD ./nginx.default.conf /etc/nginx/sites-available/default
-ADD ./nginx.magento2.conf /etc/nginx/sites-available/magento2.conf
+ADD ./nginx.default.conf /etc/nginx/conf.d/default.conf
 # mysql installation
 
 

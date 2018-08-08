@@ -23,7 +23,6 @@ if [ ! -f /home/vietcli/.log/vietcli-pw.txt ]; then
         mkdir /etc/nginx/sites-enabled;
     fi
 
-    ln -s /etc/nginx/sites-available/magento2.conf /etc/nginx/sites-enabled/magento2.conf
     ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 fi
@@ -53,6 +52,12 @@ if [ ! -f /home/vietcli/.log/mysql-vietcli-root-pw.txt ]; then
     service mysql restart
 fi
 
+
+# Set default index for magento 2 project
+if [ ! -f /home/vietcli/files/html/pub/index.php ]; then
+    mkdir /home/vietcli/files/html/pub
+    echo "<h1>Vietcli Default Page For Magento 2 Project</h1>" > /home/vietcli/files/html/pub/index.php
+fi
 
 # Check HTTP_SERVER_NAME environment variable to set Virtual Host Name
 if [ -z "$HTTP_SERVER_NAME" ]; then
