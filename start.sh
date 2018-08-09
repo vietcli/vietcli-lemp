@@ -59,15 +59,10 @@ if [ ! -f /home/vietcli/files/html/pub/index.php ]; then
     echo "<h1>Vietcli Default Page For Magento 2 Project</h1>" > /home/vietcli/files/html/pub/index.php
 fi
 
-# Check HTTP_SERVER_NAME environment variable to set Virtual Host Name
-if [ -z "$HTTP_SERVER_NAME" ]; then
-    echo "HTTP_SERVER_NAME is empty"
-else
-    sed -i "s/magento2.local/${HTTP_SERVER_NAME}/" /etc/nginx/sites-available/magento2.conf
-    sed -i "s/*.magento2.local/*.${HTTP_SERVER_NAME}/" /etc/nginx/sites-available/magento2.conf
-    service nginx restart
-    service php7.0-fpm restart
-fi
+#Starting up
+chown -R mysql:mysql /var/lib/mysql /var/run/mysqld && service mysql start
+service nginx restart
+service php7.0-fpm restart
 
 # run SSH
 /usr/sbin/sshd -D
